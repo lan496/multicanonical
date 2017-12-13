@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include "./include/system.hpp"
+#include "./include/MCMC.hpp"
 
 int brute_force(int L) {
   int seg = 2 * L * (L + 1);
@@ -10,6 +11,7 @@ int brute_force(int L) {
   int cnt = 0;
 
   for(int S = 0; S < (1 << seg); ++S) {
+    if(!(S & 1) || ((S >> (seg / 2) & 1))) continue;
     Configuration Ctmp(seg);
     for(int i = 0; i < seg; ++i) {
       if((S >> i) & 1) Ctmp[i] = true;
@@ -18,6 +20,8 @@ int brute_force(int L) {
     std::cerr << etmp << std::endl;
     if(etmp == 0) ++cnt;
   }
+
+  cnt *= 2;
 
   return cnt;
 }
@@ -31,8 +35,9 @@ int main(int argc, char* argv[]) {
 
   int L = std::atoi(argv[1]);
 
-  int cnt = brute_force(L);
+  std::vector<double> entropy;
+  int delta = 1;
+  Wang_Landau(L, delta, entropy);
 
-  std::cout << cnt << std::endl;
   return 0;
 }

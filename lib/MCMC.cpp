@@ -20,7 +20,7 @@ bool is_flat(const std::vector<int>& hist) {
   return ret;
 }
 
-void Wang_Landau(int L, int delta, std::vector<double> weights) {
+void Wang_Landau(int L, int delta, std::vector<double> entropy) {
   int V = (L + 1) * (L + 1);
 
   int Emax = 3 * V;
@@ -28,10 +28,10 @@ void Wang_Landau(int L, int delta, std::vector<double> weights) {
 
   int N = (Emax - Emin + delta - 1) / delta;
   std::vector<int> hist(N, 0);
-  std::vector<double> entropy(N, 0);
+  entropy.assign(N, 0);
   double f = 1.0;
 
-  double eps = 1e-2;
+  double eps = 1e-4;
 
   std::random_device rnd;
   std::mt19937 mt(rnd());
@@ -65,13 +65,4 @@ void Wang_Landau(int L, int delta, std::vector<double> weights) {
       f *= 0.5;
     }
   }
-
-  double entropy_tot = 0;
-  for(int i = 0; i < N; ++i) entropy_tot += entropy[i];
-
-  weights.assign(N, 0);
-  for(int i = 0; i < N; ++i) weights[i] = std::exp(entropy[i] / entropy_tot);
-
-  for(int i = 0; i < N; ++i) std::cerr << " " << weights[i];
-  std::cerr << std::endl;
 }

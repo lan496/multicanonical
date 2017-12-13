@@ -36,29 +36,28 @@ void convert_configuration_to_graph(const Configuration& C, int L, Graph& G) {
   }
 }
 
-int dijkstra(const Graph& G, int s, int t) {
-  int V = G.size();
-  int INF = V;
-  std::vector<int> d(V, INF);
-  d[s] = 0;
-
-  using P = std::pair<int,int>;
-  std::priority_queue<P, std::vector<P>, std::greater<P>> que;
-  que.push(P(0, s));
-  while(!que.empty()) {
-    P q = que.top();
-    que.pop();
-    if(d[q.second] < q.first) continue;
-    for(Edge e: G[q.second]) {
-      if(d[e.dst] > d[e.src] + e.weight) {
-        d[e.dst] = d[e.src] + e.weight;
-        que.push(P(d[e.dst], e.dst));
-      }
+//http://www.prefield.com/algorithm/container/union_find.html
+struct UnionFind {
+  std::vector<int> data;
+  UnionFind(int size) : data(size, -1) { }
+  bool unionSet(int x, int y) {
+    x = root(x); y = root(y);
+    if (x != y) {
+      if (data[y] < data[x]) std::swap(x, y);
+      data[x] += data[y]; data[y] = x;
     }
+    return x != y;
   }
-
-  return d[t];
-}
+  bool findSet(int x, int y) {
+    return root(x) == root(y);
+  }
+  int root(int x) {
+    return data[x] < 0 ? x : data[x] = root(data[x]);
+  }
+  int size(int x) {
+    return -data[root(x)];
+  }
+};
 
 int energy(const Configuration& C, int L) {
   Graph G;
@@ -76,14 +75,15 @@ int energy(const Configuration& C, int L) {
     }
   }
 
-  int E = 0;
+  UnionFind uf(V);
   for(int i = 0; i < V; ++i) {
-    E += G[i].size();
+    for(Edge e: G[i]) {
+      uf.unionSet(e.src, e.dst);
+    }
   }
-  E /= 2;
-
-  int dist = dijkstra(G, 0, V - 1);
-  e += std::abs(dist - E);
+  for(int i = 0; i < V; ++i) {
+    if(G[i].size() > 0 && !uf.findSet(0, i)) ++e;
+  }
 
   return e;
 }
