@@ -36,8 +36,11 @@ int main(int argc, char* argv[]) {
   int L = std::atoi(argv[1]);
 
   std::vector<double> entropy;
-  int delta = 1;
-  Wang_Landau(L, delta, entropy);
+  Wang_Landau(L, entropy);
 
+  double P0_tmp = multicanonical_sampling(L, entropy);
+  std::cerr << P0_tmp << std::endl;
+  double estimate = P0_tmp / softmax(entropy, 0);
+  std::cout << estimate << std::endl;
   return 0;
 }
