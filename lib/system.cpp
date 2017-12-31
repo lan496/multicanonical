@@ -85,6 +85,7 @@ int energy(const Configuration& C, int L) {
     if(G[i].size() > 0 && !uf.findSet(0, i)) ++e;
   }
 
+  e /= 2;
   return e;
 }
 
