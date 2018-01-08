@@ -58,7 +58,7 @@ void Wang_Landau(int L, std::vector<double>& entropy) {
   entropy.assign(N, 0);
   double f = 1.0;
 
-  double eps = 1e-4;
+  double eps = 1e-5;
 
   std::random_device rnd;
   std::mt19937 mt(rnd());

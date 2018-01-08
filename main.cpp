@@ -19,7 +19,7 @@ void brute_force(int L, std::vector<int>& hist) {
     }
     int etmp = energy(Ctmp, L);
     ++hist[etmp];
-    std::cerr << etmp << std::endl;
+    std::cerr << " " << etmp << std::endl;
   }
 }
 
@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
   std::vector<double> entropy;
   Wang_Landau(L, entropy);
 
-  int t = 1000;
+  int t = 100;
   long double mean = 0, mean2 = 0;
 
   for(int i = 0; i < t; ++i) {
